@@ -24,8 +24,7 @@ public class UserDao {
     public User update(User user) {
         EntityManager entityManager = DaoFactory.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.merge(user);
-        User result = entityManager.find(User.class, user.getId());
+        User result = entityManager.merge(user);
         entityManager.getTransaction().commit();
         entityManager.close();
         return result;
@@ -59,12 +58,10 @@ public class UserDao {
     public List<User> getAll() {
         EntityManager entityManager = DaoFactory.getEntityManagerFactory().createEntityManager();
         entityManager.getTransaction().begin();
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> cq = cb.createQuery(User.class);
-        Root<User> result = cq.from(User.class);
-        cq.select(result);
-        TypedQuery<User> q = entityManager.createQuery(cq);
-        List<User> resultList = q.getResultList();
+        CriteriaQuery<User> criteriaQuery = entityManager.getCriteriaBuilder().createQuery(User.class);
+        Root<User> result = criteriaQuery.from(User.class);
+        criteriaQuery.select(result);
+        List<User> resultList = entityManager.createQuery(criteriaQuery).getResultList();
         entityManager.getTransaction().commit();
         return resultList;
     }
